@@ -1,11 +1,9 @@
 Question 1
-Instructions
-100 XP
 Use CHOOSE() and MONTH() to get the season in which each order was shipped from the Orders table. You should select the order ID, shipped date, and then the season aliased as ShippedSeason. You can copy and paste the below into your query.
-
 'Winter', 'Winter', 'Spring', 'Spring', 'Spring', 'Summer', 'Summer', 'Summer', 'Autumn', 'Autumn', 'Autumn', 'Winter'
 Be careful to filter out any NULL shipped dates.
 
+Answer.
 select orderid,shippedDate,
 choose (ISNULL(MONTH(ShippedDate),0),
 'Winter', 'Winter', 'Spring', 'Spring', 'Spring', 'Summer', 'Summer', 'Summer', 'Autumn', 'Autumn', 'Autumn', 'Winter') 
@@ -14,10 +12,9 @@ from orders;
 
 
 Question 2
-Instructions
-100 XP
 Using the Suppliers table, select the company name and use a simple IIF expression to display 'outdated' if a company has a fax number, or 'modern' if it doesn't. Alias the result of the IIF expression to Status.
 
+Answer.
 select CompanyName,
 IIF(fax IS NULL,'modern','outdated')AS status
 FROM dbo.suppliers;
@@ -25,15 +22,11 @@ FROM dbo.suppliers;
 
 
 Question 3
-Instructions
-100 XP
 Select from the Customers, Orders, and Order Details tables. Note that you need to use [Order Details] since the table name contains whitespace.
-
 Use GROUP BY and ROLLUP() to get the total quantity ordered by all countries, while maintaining the total per country in your result set.
-
 Your first column should be the country, and the second column the total quantity ordered by that country, aliased as TotalQuantity.
 
-
+Answer.
  select c.country,sum(od.quantity)as TotalQuantity
  from customers c 
  join orders o
@@ -43,20 +36,14 @@ Your first column should be the country, and the second column the total quantit
  group by rollup(c.country ,od.quantity);
 
 
-
-
 Question 4
-Instructions
-100 XP
 From the Customers table, use GROUP BY to select the country, contact title, and count of that contact title aliased as Count, grouped by country and contact title (in that order).
-
 Then use CASE WHEN, GROUPING_ID(), and ROLLUP() to add a column called Legend, which shows one of two things:
-
 When the GROUPING_ID is 0, show '' (i.e., nothing)
 When the GROUPING_ID is 1, show Subtotal for << Country >>'
 Do not use ORDER BY to order your results.
 
-
+Answer.
 select country,ContactTitle,count(contactTitle)as [Count],
 case when grouping(contactTitle)=0 then '' 
 else concat(ISNULL(contacttitle,'subtotal for '),country ) end as Legend
@@ -64,77 +51,36 @@ from customers
 Group by ROLLUP (country,ContactTitle);
 
 
-
-
-
-
-Question 5
-Instructions
-100 XP
-Convert the following query to be pivoted, using PIVOT().
-
-SELECT CategoryID, AVG(UnitPrice)
-FROM Products
-GROUP BY CategoryID;
-Your result set should look like this:
-
-Per Category	1	2	3	4	5	6	7	8
-Average Unit Price	37.9791	23.0625	25.1600	28.7300	20.2500	54.0066	32.3700	20.6825
-
-
-
-
-
-
-Question 6
-Instructions
-100 XP
+Question 5.
 Insert into the Region table the region ID 5 and the description 'Space'.
 then, in a second query, select the newly inserted data from the table using a WHERE clause.
 Note: When you execute a query and the result is fetched, the database will be rolled back to its initial state. This means that you can click "Run Code" repeatedly, starting with a clean slate every time.
 
- 
+Answer. 
 
- DECLARE @TransactionName varchar(20) = 'Transaction1';  
+DECLARE @TransactionName varchar(20) = 'Transaction1';  
  BEGIN TRAN @TransactionName  
  Insert into Region values (5,'Space');
  select * from region where regionDescription ='Space';
  ROLLBACK TRAN @TransactionName;  
 
-
-
-
-
-
-
-
-Question 7
-Instructions
-100 XP
+Question 6.
 Update the region descriptions in the Region table to be all uppercase, using SET and UPPER().
-
 Next, select all data from the table to view your updates.
-
 Note: When you execute a query and the result is fetched, the database will be rolled back to its initial state. This means that you can click "Run Code" repeatedly, starting with a clean slate every time.
 
- DECLARE @TransactionName varchar(20) = 'Transaction1';  
+Answer.
+DECLARE @TransactionName varchar(20) = 'Transaction1';  
  BEGIN TRAN @TransactionName  
  update Region
  set RegionDescription=upper(regiondescription);
  select * from Region;
  ROLLBACK TRAN @TransactionName;  
 
-
-
-
-Question 8
-Instructions
-100 XP
+Question 7.
 Write a script that safely checks whether a certain region exists:
-
 Declare a custom region @region called 'Space', of type NVARCHAR(25).
 Use IF NOT EXISTS, ELSE, and BEGIN..END to:
-
 throw an error with THROW 50001, 'Error!', 0 if no record whose RegionDescription matches @region exists.
 select all columns for that region from the Region table if the record does exist.
 Notes:
@@ -142,6 +88,7 @@ Notes:
 Specify the Region table as Region, not dbo.Region.
 Use SELECT * FROM Region <fill in> everywhere.
 
+Answer.
 Declare @region NVARCHAR(25) = 'Space'
    IF NOT EXISTS (select * from Region where RegionDescription =@region)
     BEGIN
@@ -151,7 +98,4 @@ ELSE
 Begin 
 select * from Region where RegionDescription =@region
 End;
-
-
-
 
